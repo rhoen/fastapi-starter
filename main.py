@@ -27,9 +27,11 @@ templates = Jinja2Templates(directory="views")
 def read_root(request: Request):
     return templates.TemplateResponse("index.html", {"request": request})
 
+
 @app.get("/test/{var}")
 def test(var: str):
     return os.getenv(var)
+
 
 @app.get("/items/{item_id}")
 def read_item(item_id: int, q: Optional[str] = None):
@@ -40,13 +42,14 @@ def read_item(item_id: int, q: Optional[str] = None):
 def get_auth_config(request: Request):
     return Jinja2Templates(directory="config").TemplateResponse("config.json", {"request": request})
 
+
 @app.get("/auth_callback")
 def auth_callback():
     return {"message": "this is the auth callback url. not protected"}
 
 
 @app.get("/api/user", dependencies=[Depends(auth.implicit_scheme)])
-def api_user(user: Auth0User=Security(auth.get_user)):
+def api_user(user: Auth0User = Security(auth.get_user)):
     return {
         "user": {
             "id": user.id,
@@ -55,8 +58,14 @@ def api_user(user: Auth0User=Security(auth.get_user)):
         "secret_data": "this is a secret message"
     }
 
+
 @app.get("/api/private/scopes", dependencies=[Depends(auth.implicit_scheme)])
-def super_secret_scoped_stuff(user: Auth0User=Security(auth.get_user, scopes=["read:admin"])):
+def super_secret_scoped_stuff(user: Auth0User = Security(auth.get_user, scopes=["read:admin"])):
     """A valid access token is required to access this route"""
     return f"You found it! Only users with the read:admin privelege can be here. The user is: {user}"
 
+
+
+@app.get("/test_again")
+def test():
+    return {"hello":"world"}
