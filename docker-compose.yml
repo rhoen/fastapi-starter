@@ -10,11 +10,11 @@ services:
       - POSTGRES_HOST_AUTH_METHOD=trust
     ports:
       - "5432:5432"
-  web:
-    build: .
+  server:
+    build: ./server/
     command: poetry run uvicorn main:app --reload --host 0.0.0.0
     volumes:
-      - .:/code
+      - ./server/:/code
     ports:
       - "8000:8000"
     environment:
